@@ -2,7 +2,8 @@
 var score = 0, life = 3;
 var ghost=false, ghost2= false, ghost3=false, ghost4=false, countblink=30;
 var pacalive = true; countdeath=30;
-
+var dots = [];
+    
 var player = {
     x:280,
     y:400,
@@ -72,7 +73,7 @@ var powerdot = {
 }
 var dot ={
     x:80,
-    y:100,
+    y:50,
     eaten: false
 }
 
@@ -204,63 +205,62 @@ function checkCollisionGhost(enemy) {
         if (powerdot.ghosteat) {
             score = score + enemy.points;
             console.log("you hit "+ enemy.name + " for " + score);
-        }else{
-            life--;
-            pacalive = false;        
-        }
-
-        player.x = 280;
-        player.y = 400;
-        enemy.x = 230;
-        enemy.y = 120;
-        enemy2.x = 400;
-        enemy2.y = 120;
-        enemy3.x = 130;
-        enemy3.y = 120;
-        enemy4.x = 180;
-        enemy4.y = 120;
-        powerdot.pcountdown = 0;
-        pacalive = true;
-
+        }else{ 
+            life--; 
+            pacalive = false;         
+        } 
+ 
+        player.x = 280; 
+        player.y = 400; 
+        enemy.x = 230; 
+        enemy.y = 120; 
+        enemy2.x = 400; 
+        enemy2.y = 120; 
+        enemy3.x = 130; 
+        enemy3.y = 120; 
+        enemy4.x = 180; 
+        enemy4.y = 120; 
+        powerdot.pcountdown = 0; 
+        pacalive = true; 
     }
 } 
 //collision detection powerdot
-function checkCollisionPowerDot(powerdot) {
-    if (player.x <= powerdot.x && powerdot.x <= (player.x+32) && player.y <= powerdot.y && powerdot.y <=(player.y+32)){
-        powerdot.powerup = false;
-        powerdot.pcountdown = 500;
-        powerdot.ghostNum = enemy.ghostNum;
-        powerdot.ghostNum2 = enemy2.ghostNum;
-        powerdot.ghostNum3 = enemy3.ghostNum;
-        powerdot.ghostNum4 = enemy4.ghostNum;
-        enemy.ghostNum = 384;
-        enemy2.ghostNum = 384;
-        enemy3.ghostNum = 384;
-        enemy4. ghostNum = 384;
-        powerdot.x = 0;
-        powerdot.y = 0;
-        powerdot.ghosteat = true;
-        player.speed = 10;
+function checkCollisionPowerDot(powerdot) { 
+    if (player.x <= powerdot.x && powerdot.x <= (player.x+32) && player.y <= powerdot.y && powerdot.y <=(player.y+32)){ 
+        powerdot.powerup = false; 
+        powerdot.pcountdown = 500; 
+        powerdot.ghostNum = enemy.ghostNum; 
+        powerdot.ghostNum2 = enemy2.ghostNum; 
+        powerdot.ghostNum3 = enemy3.ghostNum; 
+        powerdot.ghostNum4 = enemy4.ghostNum; 
+        enemy.ghostNum = 384; 
+        enemy2.ghostNum = 384; 
+        enemy3.ghostNum = 384; 
+        enemy4. ghostNum = 384; 
+        powerdot.x = 0; 
+        powerdot.y = 0; 
+        powerdot.ghosteat = true; 
+        player.speed = 10; 
     }
 }
 
-function chekCollisionDot(dot){
+// WIP STILL NOT WORKING 
+function checkCollisionDot(dot){
     //collision with upper dots
-    if ((player.x+10) <= dot.y && dot.x <= (player.x+10) && (player.y+70) <= (dot.y+5) && (dot.y+5) <=(player.y+70)){
+    if ((player.x) <= dot.x && dot.x <= (player.x+15) && (player.y) <= (dot.y) && (dot.y) <=(player.y+30) && !dot.eaten){
+        dot.eaten = true;        
         score += 10;
-        console.log("EATEN DOT")
-        //dot.eaten = true;
-    } 
+    }   
 }
 
 //render energy power dot 
-function renderPowerDot(powerdot) {
-    if (powerdot.powerup) {
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(powerdot.x, powerdot.y , 7, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
+function renderPowerDot(powerdot) { 
+    if (powerdot.powerup) { 
+        ctx.fillStyle = "#ffffff"; 
+        ctx.beginPath(); 
+        ctx.arc(powerdot.x, powerdot.y , 7, 0, Math.PI * 2, true); 
+        ctx.closePath(); 
+        ctx.fill(); 
     }
 }
 
@@ -271,45 +271,138 @@ function renderDot(dot) {
         ctx.arc(dot.x, dot.y , 4, 0, Math.PI * 2, true);
         ctx.closePath();
         ctx.fill();
-    }    
-}
-
-function renderMap() {
-    dot.x = 80;
-    //render horizontal dots 
-    while (dot.x < 550) {
-        // upper horizontal dots
-        dot.y = 50;
-        renderDot(dot);
-        // bottom horizontal dots
-        dot.y = 500;
-        renderDot(dot);
-        // increase x to cover horizontal space
-        dot.x+= 50;     
     }
-    dot.y = 100;    
-    //render vertical dots
-    while (dot.y < 550) {
-        //left side vertial dot line
-        dot.x = 80;
-        renderDot(dot);
-        //right side vertical dot line
-        dot.x = 530
-        renderDot(dot); 
-        //increase y to conver vertical line 
-        dot.y+= 50;
-    } 
 }
 
 function createPowerDot(powerdot) {
-    if (!powerdot.powerup && powerdot.pcountdown < 5) {
+    if (!powerdot.powerup  && powerdot.pcountdown < 5) {
         powerdot.x = myNum(420)+30;
         powerdot.y = myNum(250)+30;
         powerdot.powerup = true;
     }
 }
 
+function renderMap() {
+
+    //upper dots
+    //THIS should be a power dot
+    renderDot(dots[0]);
+    // ----------//
+    dots[1].x = 130;
+    renderDot(dots[1]);
+    dots[2].x = 180;
+    renderDot(dots[2]);
+    dots[3].x = 230;
+    renderDot(dots[3]);     
+    dots[4].x = 280;
+    renderDot(dots[4]);     
+    dots[5].x = 330;
+    renderDot(dots[5]);            
+    dots[6].x = 380;
+    renderDot(dots[6]);  
+    dots[7].x = 430;
+    renderDot(dots[7]);  
+    dots[8].x = 480;
+    renderDot(dots[8]);
+    //THIS should be a power dot     
+    dots[9].x = 530;
+    renderDot(dots[9]); 
+    // ----------//
+
+    //bottom dots
+
+    //THIS should be a power dot    
+    dots[10].y = 500;        
+    dots[10].x = 80;
+    renderDot(dots[10]);
+    // ----------//  
+    dots[11].y = 500;        
+    dots[11].x = 130;
+    renderDot(dots[11]);
+    dots[12].y = 500;                
+    dots[12].x = 180;
+    renderDot(dots[12]);
+    dots[13].y = 500;                
+    dots[13].x = 230;
+    renderDot(dots[13]);  
+    dots[14].y = 500;                   
+    dots[14].x = 280;
+    renderDot(dots[14]);
+    dots[15].y = 500;                     
+    dots[15].x = 330;
+    renderDot(dots[15]);  
+    dots[16].y = 500;                          
+    dots[16].x = 380;
+    renderDot(dots[16]);  
+    dots[17].y = 500;                
+    dots[17].x = 430;
+    renderDot(dots[17]);
+    dots[18].y = 500;                  
+    dots[18].x = 480;
+    renderDot(dots[18]); 
+    //THIS should be a power dot        
+    dots[19].y = 500;                
+    dots[19].x = 530;
+    renderDot(dots[19]);  
+    //THIS should be a power dot    
+
+    //left dots 
+    dots[20].y = 100;                
+    dots[20].x = 80;
+    renderDot(dots[20]); 
+    dots[21].y = 150;                
+    dots[21].x = 80;
+    renderDot(dots[21]); 
+    dots[22].y = 200;                
+    dots[22].x = 80;
+    renderDot(dots[22]); 
+    dots[23].y = 250;                
+    dots[23].x = 80;
+    renderDot(dots[23]); 
+    dots[24].y = 300;                
+    dots[24].x = 80;
+    renderDot(dots[24]); 
+    dots[25].y = 350;                
+    dots[25].x = 80;
+    renderDot(dots[25]); 
+    dots[26].y = 400;                
+    dots[26].x = 80;
+    renderDot(dots[26]);
+    dots[27].y = 450;                
+    dots[27].x = 80;
+    renderDot(dots[27]);  
+    
+    //right dots
+    dots[28].y = 100;                
+    dots[28].x = 530;
+    renderDot(dots[28]); 
+    dots[29].y = 150;                
+    dots[29].x = 530;
+    renderDot(dots[29]); 
+    dots[30].y = 200;                
+    dots[30].x = 530;
+    renderDot(dots[30]); 
+    dots[31].y = 250;                
+    dots[31].x = 530;
+    renderDot(dots[31]); 
+    dots[32].y = 300;                
+    dots[32].x = 530;
+    renderDot(dots[32]); 
+    dots[33].y = 350;                
+    dots[33].x = 530;
+    renderDot(dots[33]); 
+    dots[34].y = 400;                
+    dots[34].x = 530;
+    renderDot(dots[34]);
+    dots[35].y = 450;                
+    dots[35].x = 530;
+    renderDot(dots[35]);  
+}
+
 function render(){
+
+    var dotindex = 0;
+    
     if (life > 0) {
         ctx.fillStyle="#000000";
         ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -342,24 +435,31 @@ function render(){
             enemy4.y = 120;
             ghost4 = true;
         }
-        
-        //filling the map with dots
-        renderMap();
 
+        //create dot object
+        for (i = 0; i < 36; i++) {
+            var copydot = Object.assign({}, dot);
+            dots.push(copydot);
+        
+        }
+        
         if (pacalive) {
-            //moveGhost(enemy);
-            //moveGhost(enemy2);
-            //moveGhost(enemy3);
-            //moveGhost(enemy4);
+            moveGhost(enemy);
+            moveGhost(enemy2);
+            moveGhost(enemy3);
+            moveGhost(enemy4);
         }
 
-        chekCollisionDot(dot);
         checkCollisionGhost(enemy);
         checkCollisionGhost(enemy2);
         checkCollisionGhost(enemy3);
         checkCollisionGhost(enemy4);
         checkCollisionPowerDot(powerdot);
-
+        while (dotindex < 36) {
+            checkCollisionDot(dots[dotindex]);  
+            dotindex ++;
+        }
+                                                  
         //powerup countdown
         if (powerdot.ghosteat) {
             powerdot.pcountdown--;
@@ -372,10 +472,12 @@ function render(){
                 enemy4.ghostNum = powerdot.ghostNum4; 
             }
         }
-
+       
         renderPowerDot(powerdot);
-
-
+        
+        //filling the map with dots   
+        renderMap();
+        
         //enemy blink animation 
         if (countblink>0) {
             countblink--;
@@ -420,8 +522,14 @@ function render(){
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 score = 0;
                 life = 3;
+                dot.eaten = false;
+                dotindex = 0;
+                while (dotindex < 36) {
+                    dots[dotindex].eaten = false ;  
+                    dotindex ++;
+                }
                 playGame();
-            // if not end game     
+            // if not end game and show score     
             }else if (event.keyCode == 78) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle="#000000";    
