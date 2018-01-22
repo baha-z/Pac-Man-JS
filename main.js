@@ -1,7 +1,7 @@
 
 var score = 0, life = 3;
 var ghost=false, ghost2= false, ghost3=false, ghost4=false, countblink=30;
-var pacalive = true; countdeath=30;
+var pacalive = true; countdeath=30000;
 var dots = [];
     
 var player = {
@@ -207,9 +207,15 @@ function checkCollisionGhost(enemy) {
             console.log("you hit "+ enemy.name + " for " + score);
         }else{ 
             life--; 
-            pacalive = false;         
+            pacalive = false;    
+            //pause ghosts, display death animation 
+            while (countdeath > 0 ) {
+                console.log ("this is hapenning");
+                countdeath --;
+            }     
         } 
- 
+
+        //reset positions for player and ghosts 
         player.x = 280; 
         player.y = 400; 
         enemy.x = 230; 
@@ -220,8 +226,9 @@ function checkCollisionGhost(enemy) {
         enemy3.y = 120; 
         enemy4.x = 180; 
         enemy4.y = 120; 
-        powerdot.pcountdown = 0; 
         pacalive = true; 
+        countdeath=30000
+        powerdot.pcountdown = 0;     
     }
 } 
 //collision detection powerdot
